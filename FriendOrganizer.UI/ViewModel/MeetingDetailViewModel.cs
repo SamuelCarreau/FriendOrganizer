@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FriendOrganizer.Model;
 using FriendOrganizer.UI.Data.Repositories;
@@ -95,6 +92,12 @@ namespace FriendOrganizer.UI.ViewModel
                 }
             };
             ((DelegateCommand)SaveCommand).RaiseCanExecuteChanged();
+
+            if(Meeting.Id == 0)
+            {
+                // Little trick to trigger the validation
+                Meeting.Title = "";
+            }
         }
     }
 }
