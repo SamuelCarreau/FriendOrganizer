@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -20,19 +19,19 @@ namespace FriendOrganizer.UI.ViewModel
     {
         private IFriendRepository _friendRepository;
         private IMessageDialogService _messageDialogService;
-        private IProgrammingLaunguageLookupDataService _programmingLaunguageLookupDataService;
+        private IProgrammingLaunguageLookupDataService _programmingLanguageLookupDataService;
         private FriendWrapper _friend;
         private FriendPhoneNumberWrapper _SelectedPhoneNumber;
 
         public FriendDetailViewModel(IFriendRepository friendRepository,
             IEventAggregator eventAggregator,
             IMessageDialogService messageDialogService,
-            IProgrammingLaunguageLookupDataService programmingLaunguageLookupDataService)
+            IProgrammingLaunguageLookupDataService programmingLanguageLookupDataService)
             :base(eventAggregator)
         {
             _friendRepository = friendRepository;
             _messageDialogService = messageDialogService;
-            _programmingLaunguageLookupDataService = programmingLaunguageLookupDataService;
+            _programmingLanguageLookupDataService = programmingLanguageLookupDataService;
 
             AddPhoneNumberCommand = new DelegateCommand(OnAddPhoneNumberExecute);
             RemovePhoneNumberCommand = new DelegateCommand(OnRemovePhoneNumberExecute, OnRemovePhoneNumberCanExecute);
@@ -108,7 +107,7 @@ namespace FriendOrganizer.UI.ViewModel
         {
             ProgrammingLanguages.Clear();
             ProgrammingLanguages.Add(new NullLookupItem { DisplayMember = " - " });
-            var lookup = await _programmingLaunguageLookupDataService.GetProgrammingLanguageLookupAsync();
+            var lookup = await _programmingLanguageLookupDataService.GetProgrammingLanguageLookupAsync();
             foreach (var lookupItem in lookup)
             {
                 ProgrammingLanguages.Add(lookupItem);
@@ -163,6 +162,12 @@ namespace FriendOrganizer.UI.ViewModel
 
         protected override async void OnDeleteExecute()
         {
+            if(await _friendRepository.HasMeetingsAsync(Friend.Id))
+            {
+                _messageDialogService.ShowInfoDialog($"{Friend.FirstName} {Friend.LastName} can't be deleted, as this friend is part of at least one meeting");
+                return;
+            }
+
             var result = _messageDialogService.ShowOkCancelDialog($"Do you really want to delete the friend {Friend.FirstName} {Friend.LastName}?", "Question");
             if(result == MessageDialogResult.OK)
             {
