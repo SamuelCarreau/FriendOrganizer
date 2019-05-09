@@ -17,6 +17,7 @@ namespace FriendOrganizer.UI.ViewModel
         private IMessageDialogService _messageDialogService;
         private IDetailViewModel _selectedDetailViewModel;
         private IIndex<string, IDetailViewModel> _detailViewModelCreator;
+        private int _nextNewItemId = 0;
 
         public MainViewModel(INavigationViewModel navigationViewModel,
             IIndex<string, IDetailViewModel> detailViewModelCreator,
@@ -79,12 +80,12 @@ namespace FriendOrganizer.UI.ViewModel
             SelectedDetailViewModel = detailViewModel;
         }
 
-        private int nextNewItemId = 0;
+        
         private void OnCreateNewDetailExecute(Type viewModelType)
         {
             OnOpenDetailView(new OpenDetailViewEventArgs
             {
-                Id = nextNewItemId--,
+                Id = _nextNewItemId--,
                 ViewModelName = viewModelType.Name
             });
         }
