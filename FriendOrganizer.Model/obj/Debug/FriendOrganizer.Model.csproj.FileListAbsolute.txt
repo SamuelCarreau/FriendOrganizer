@@ -1,6 +1,0 @@
-D:\WPF course\2017\FriendOrganizer\FriendOrganizer.Model\bin\Debug\FriendOrganizer.Model.dll
-D:\WPF course\2017\FriendOrganizer\FriendOrganizer.Model\bin\Debug\FriendOrganizer.Model.pdb
-D:\WPF course\2017\FriendOrganizer\FriendOrganizer.Model\obj\Debug\FriendOrganizer.Model.csprojAssemblyReference.cache
-D:\WPF course\2017\FriendOrganizer\FriendOrganizer.Model\obj\Debug\FriendOrganizer.Model.csproj.CoreCompileInputs.cache
-D:\WPF course\2017\FriendOrganizer\FriendOrganizer.Model\obj\Debug\FriendOrganizer.Model.dll
-D:\WPF course\2017\FriendOrganizer\FriendOrganizer.Model\obj\Debug\FriendOrganizer.Model.pdb
