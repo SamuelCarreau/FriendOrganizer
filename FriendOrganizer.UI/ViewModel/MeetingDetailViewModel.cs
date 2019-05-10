@@ -9,6 +9,7 @@ using FriendOrganizer.UI.Data.Repositories;
 using FriendOrganizer.UI.Event;
 using FriendOrganizer.UI.View.Services;
 using FriendOrganizer.UI.Wrapper;
+using MahApps.Metro.Controls.Dialogs;
 using Prism.Commands;
 using Prism.Events;
 
@@ -92,13 +93,13 @@ namespace FriendOrganizer.UI.ViewModel
             SetupPicklist();
         }
 
-        protected override void OnDeleteExecute()
+        protected override async void OnDeleteExecute()
         {
-            var result = MessageDialogService.ShowOkCancelDialog($"Do you Really want to delete the {Meeting.Title}?","Question");
-            if(result == MessageDialogResult.OK)
+            var result = await MessageDialogService.ShowOkCancelDialogAsync($"Do you Really want to delete the {Meeting.Title}?","Question");
+            if(result == MessageDialogResult.Affirmative)
             {
                 _meetingRepository.Remove(Meeting.Model);
-                _meetingRepository.SaveAsync();
+                await _meetingRepository.SaveAsync();
                 RaiseDetailDeletedEvent(Meeting.Id);
             }
         }
