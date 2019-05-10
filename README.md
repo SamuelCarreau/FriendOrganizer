@@ -12,4 +12,4 @@ wpf-mvvm-entity-framework-app from course pluralsight website
 4. 	Open the package manager console, select the DataAccess project execute  ```update-database``` command,
 	to Generate the Db with seed data.
 
-5. Run it with F5 or
+5. 	Run it
