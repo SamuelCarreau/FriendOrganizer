@@ -1,7 +1,7 @@
 # FriendOrganizer
 wpf-mvvm-entity-framework-app from course pluralsight website
 
-##How to run the project
+## How to run the project
 
 1. 	Clone the project on a local directory of your choice and open it in visual studio.
 
