@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -26,7 +27,7 @@ namespace FriendOrganizer.UI.ViewModel
             IEventAggregator eventAggregator,
             IMessageDialogService messageDialogService,
             IProgrammingLaunguageLookupDataService programmingLanguageLookupDataService)
-            :base(eventAggregator,messageDialogService)
+            : base(eventAggregator, messageDialogService)
         {
             _friendRepository = friendRepository;
             _programmingLanguageLookupDataService = programmingLanguageLookupDataService;
@@ -152,7 +153,7 @@ namespace FriendOrganizer.UI.ViewModel
         }
 
         public ICommand AddPhoneNumberCommand { get; }
-        
+
         public ICommand RemovePhoneNumberCommand { get; }
 
         public ObservableCollection<LookupItem> ProgrammingLanguages { get; }
@@ -161,31 +162,33 @@ namespace FriendOrganizer.UI.ViewModel
 
         protected override async void OnSaveExecute()
         {
-            await _friendRepository.SaveAsync();
-            HasChanges = _friendRepository.HasChanges();
-            Id = Friend.Id;
-            RaiseDetailSavedEvent(Friend.Id, $"{Friend.FirstName} {Friend.LastName}");
-
+            await SaveWithOptimisticConcurrencyAsync(_friendRepository.SaveAsync,
+                () =>
+                {
+                    HasChanges = _friendRepository.HasChanges();
+                    Id = Friend.Id;
+                    RaiseDetailSavedEvent(Friend.Id, $"{Friend.FirstName} {Friend.LastName}");
+                });
         }
 
         protected override bool OnSaveCanExecute()
         {
-            return Friend != null 
-                && !Friend.HasErrors 
+            return Friend != null
+                && !Friend.HasErrors
                 && PhoneNumbers.All(pn => !pn.HasErrors)
                 && HasChanges;
         }
 
         protected override async void OnDeleteExecute()
         {
-            if(await _friendRepository.HasMeetingsAsync(Friend.Id))
+            if (await _friendRepository.HasMeetingsAsync(Friend.Id))
             {
                 MessageDialogService.ShowInfoDialog($"{Friend.FirstName} {Friend.LastName} can't be deleted, as this friend is part of at least one meeting");
                 return;
             }
 
             var result = MessageDialogService.ShowOkCancelDialog($"Do you really want to delete the friend {Friend.FirstName} {Friend.LastName}?", "Question");
-            if(result == MessageDialogResult.OK)
+            if (result == MessageDialogResult.OK)
             {
                 _friendRepository.Remove(Friend.Model);
                 await _friendRepository.SaveAsync();
